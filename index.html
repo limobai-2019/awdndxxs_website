@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱玩电脑的小学森の网页</title>
+    <!-- 引入图标库 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- 全局变量与基础设置 --- */
+        :root {
+            --primary-color: #49b1f5; /* 主题蓝 */
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --card-radius: 16px;
+            --shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-main);
+            /* 背景大图指定为 img.png */
+            background-image: url('img.png'); 
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 顶部导航栏 (毛玻璃) --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-left span { font-weight: bold; font-size: 1.1rem; border-left: 4px solid var(--primary-color); padding-left: 10px; }
+        .nav-right i { margin-left: 20px; font-size: 1.1rem; cursor: pointer; color: #555; }
+        .nav-right i:hover { color: var(--primary-color); }
+        .nav-right a i { margin-left: 20px; font-size: 1.1rem; cursor: pointer; color: #555; }
+        .nav-right a i:hover { color: var(--primary-color); }
+
+        /* --- Hero 区域 (大图文字) --- */
+        /* 注意：Hero区域不加任何模糊或遮罩，保持背景图清晰 */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .hero-title { font-size: 3.5rem; margin-bottom: 10px; letter-spacing: 2px; }
+        .hero-subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
+        
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 8px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .social-icons a:hover { background: white; color: var(--primary-color); transform: translateY(-3px); }
+
+        /* --- 内容区域（从Hero下方开始到页面底部）--- */
+        /* 这个区域的整体背景需要模糊效果 */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 模糊背景层 - 覆盖content-wrapper的整个区域 */
+        .content-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            z-index: -1;
+        }
+
+        /* --- 主容器布局 --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 水平居中 */
+            padding: 0 20px;
+        }
+
+        /* --- 个人信息卡片 (毛玻璃效果) --- */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: var(--card-radius);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        /* 卡片顶部高光线条 */
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.6) 20%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0.6) 80%,
+                transparent);
+            pointer-events: none;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            transition: transform 0.5s;
+        }
+        .avatar:hover { transform: rotate(360deg); }
+
+        .profile-name { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .profile-bio { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+        
+        /* --- 页脚 --- */
+        footer {
+            background: #000000;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .profile-card { max-width: 90%; }
+        }
+
+        /* --- 深色模式样式 --- */
+        body.dark-mode {
+            background-color: #0f0f1a;
+            color: #e0e0e0;
+        }
+        body.dark-mode .navbar {
+            background: rgba(20, 20, 35, 0.85);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        body.dark-mode .nav-right i { color: #ccc; }
+        body.dark-mode .nav-right a i { color: #ccc; }
+        body.dark-mode .profile-card {
+            background: rgba(20, 20, 35, 0.65);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        body.dark-mode .profile-card::before {
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent);
+        }
+        body.dark-mode .profile-bio { color: #aaa; }
+        body.dark-mode .avatar { border-color: #333; }
+        body.dark-mode footer {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 悬浮文字气泡 */
+        .tooltip-bubble {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
+        .tooltip-bubble::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+        .tooltip-bubble.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        body.dark-mode .social-icons a {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        body.dark-mode .social-icons a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        /* QQ图标字体兜底 */
+        .fab.fa-qq:before { content: "\f1d6"; }
+        /* 深色模式下内容区域的模糊背景也要变暗 */
+        body.dark-mode .content-wrapper::before {
+            backdrop-filter: blur(25px) saturate(150%) brightness(0.3);
+            -webkit-backdrop-filter: blur(25px) saturate(150%) brightness(0.3);
+        }
+
+        /* --- 主题切换动画（从左上往右下展开） --- */
+        .theme-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
+            pointer-events: none;
+            clip-path: circle(0% at 0% 0%);
+            transition: clip-path 0.6s ease-in-out;
+        }
+        .theme-overlay.active {
+            clip-path: circle(150% at 0% 0%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <span>爱玩电脑的小学森</span>
+        </div>
+        <div class="nav-right">
+            <!-- 房子键：返回本HTML（首页） -->
+            <a href="index.html" title="首页"><i class="fas fa-home"></i></a>
+            <!-- 已删除搜索按钮 -->
+            <!-- 明暗主题切换按钮 -->
+            <i class="fas fa-moon" title="切换夜间模式" id="theme-toggle"></i>
+        </div>
+    </nav>
+
+    <!-- 头部大图区域（不模糊，保持背景图清晰） -->
+    <header class="hero-section">
+        <h1 class="hero-title">爱玩电脑的小学森の网页</h1>
+        <p class="hero-subtitle">随便建的玩玩的</p>
+        <div class="social-icons">
+            <!-- 4个联系方式按钮全部链接到baidu.com -->
+            <a href="https://space.bilibili.com/3537111735077481" target="_blank"><i class="fab fa-bilibili"></i></a>
+            <a href="https://github.com/limobai-2019" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="javascript:void(0)" id="envelope-btn"><i class="fas fa-envelope"></i></a>
+            <a href="javascript:void(0)" id="qq-btn"><i class="fab fa-qq"></i></a>
+
+        </div>
+    </header>
+
+    <!-- 主体内容区域（带模糊背景，从Hero下方一直覆盖到页脚） -->
+    <div class="content-wrapper">
+        <!-- 主容器 -->
+        <div class="main-container">
+            
+            <!-- 个人信息（居中显示） -->
+            <div class="profile-card">
+                <!-- 头像指定为 img1.png -->
+                <img src="img1.png" alt="Avatar" class="avatar">
+                <h2 class="profile-name">爱玩电脑的小学森</h2>
+                <p class="profile-bio">这里是个人简介，写点什么好呢？</p>
+            </div>
+
+        </div>
+
+        <!-- 页脚（也在模糊区域内） -->
+        <footer>
+            <p>&copy; 2026 爱玩电脑的小学森の网页. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 主题切换动画覆盖层 -->
+    <div class="theme-overlay" id="theme-overlay"></div>
+
+    <!-- 明暗主题切换脚本 -->
+    <script>
+        // 获取主题切换按钮和body元素
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const overlay = document.getElementById('theme-overlay');
+
+        // 页面加载时检查本地存储中是否有保存的主题偏好
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            overlay.style.background = '#0f0f1a';
+            themeToggle.classList.remove('fa-moon');
+            themeToggle.classList.add('fa-sun');
+        } else {
+            overlay.style.background = '#f0f2f5';
+        }
+
+        // 点击切换主题（带从左上往右下的展开动画）
+        themeToggle.addEventListener('click', function() {
+            const isDark = body.classList.contains('dark-mode');
+            
+            // 设置覆盖层颜色为目标主题色
+            if (isDark) {
+                overlay.style.background = '#f0f2f5';
+            } else {
+                overlay.style.background = '#0f0f1a';
+            }
+            
+            // 触发动画：从左上角展开覆盖层
+            overlay.classList.add('active');
+            
+            // 动画进行到一半时切换主题
+            setTimeout(function() {
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    themeToggle.classList.remove('fa-moon');
+                    themeToggle.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeToggle.classList.remove('fa-sun');
+                    themeToggle.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+                
+                // 动画结束后收起覆盖层
+                setTimeout(function() {
+                    overlay.classList.remove('active');
+                }, 50);
+            }, 300);
+        });
+
+        // 信封按钮点击弹出悬浮文字
+        const envelopeBtn = document.getElementById('envelope-btn');
+        if (envelopeBtn) {
+            envelopeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 创建气泡元素
+                const bubble = document.createElement('div');
+                bubble.className = 'tooltip-bubble';
+                bubble.textContent = 'limobai_2019@qq.com';
+                // 将气泡插入到信封按钮旁边
+                envelopeBtn.appendChild(bubble);
+                // 触发动画
+                requestAnimationFrame(function() {
+                    bubble.classList.add('show');
+                });
+                // 1.5秒后自动消失
+                setTimeout(function() {
+                    bubble.classList.remove('show');
+                    setTimeout(function() {
+                        bubble.remove();
+                    }, 300);
+                }, 1500);
+            });
+        }
+
+        // QQ按钮点击弹出悬浮文字（与信封按钮相同逻辑）
+        const qqBtn = document.getElementById('qq-btn');
+        if (qqBtn) {
+            qqBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 创建气泡元素
+                const bubble = document.createElement('div');
+                bubble.className = 'tooltip-bubble';
+                bubble.textContent = 'QQ:3811938061';
+                // 将气泡插入到QQ按钮旁边
+                qqBtn.appendChild(bubble);
+                // 触发动画
+                requestAnimationFrame(function() {
+                    bubble.classList.add('show');
+                });
+                // 1.5秒后自动消失
+                setTimeout(function() {
+                    bubble.classList.remove('show');
+                    setTimeout(function() {
+                        bubble.remove();
+                    }, 300);
+                }, 1500);
+            });
+        }
+    </script>
+
+</body>
+</html>
