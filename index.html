@@ -17,13 +17,13 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: #f0f2f5;
             color: var(--text-main);
             /* 背景大图指定为 img.png */
-            background-image: url('img.png'); 
+            background-image: url('img.png');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
@@ -51,13 +51,27 @@
         }
 
         .nav-left span { font-weight: bold; font-size: 1.1rem; border-left: 4px solid var(--primary-color); padding-left: 10px; }
+
+        /* "内容"链接样式：无边框，字体颜色与左边文字一致，悬停变主题色 */
+        .nav-left a.content-link {
+            font-size: 1.1rem;
+            color: inherit;
+            border: none;
+            outline: none;
+            text-decoration: none;
+            transition: color 0.3s;
+            margin-left: 15px;
+        }
+        .nav-left a.content-link:hover {
+            color: var(--primary-color);
+        }
+
         .nav-right i { margin-left: 20px; font-size: 1.1rem; cursor: pointer; color: #555; }
         .nav-right i:hover { color: var(--primary-color); }
         .nav-right a i { margin-left: 20px; font-size: 1.1rem; cursor: pointer; color: #555; }
         .nav-right a i:hover { color: var(--primary-color); }
 
         /* --- Hero 区域 (大图文字) --- */
-        /* 注意：Hero区域不加任何模糊或遮罩，保持背景图清晰 */
         .hero-section {
             height: 100vh;
             display: flex;
@@ -72,7 +86,7 @@
 
         .hero-title { font-size: 3.5rem; margin-bottom: 10px; letter-spacing: 2px; }
         .hero-subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
-        
+
         .social-icons a {
             display: inline-block;
             width: 40px;
@@ -88,13 +102,12 @@
         .social-icons a:hover { background: white; color: var(--primary-color); transform: translateY(-3px); }
 
         /* --- 内容区域（从Hero下方开始到页面底部）--- */
-        /* 这个区域的整体背景需要模糊效果 */
         .content-wrapper {
             position: relative;
             z-index: 1;
         }
-        
-        /* 模糊背景层 - 覆盖content-wrapper的整个区域 */
+
+        /* 模糊背景层 */
         .content-wrapper::before {
             content: '';
             position: absolute;
@@ -113,7 +126,7 @@
             margin: 0 auto 20px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* 水平居中 */
+            align-items: center;
             padding: 0 20px;
         }
 
@@ -164,7 +177,7 @@
 
         .profile-name { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
         .profile-bio { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
-        
+
         /* --- 页脚 --- */
         footer {
             background: #000000;
@@ -255,8 +268,6 @@
             background: var(--primary-color);
             color: white;
         }
-        /* QQ图标字体兜底 */
-        .fab.fa-qq:before { content: "\f1d6"; }
         /* 深色模式下内容区域的模糊背景也要变暗 */
         body.dark-mode .content-wrapper::before {
             backdrop-filter: blur(25px) saturate(150%) brightness(0.3);
@@ -278,6 +289,9 @@
         .theme-overlay.active {
             clip-path: circle(150% at 0% 0%);
         }
+
+        /* QQ图标字体兜底 */
+        .fab.fa-qq:before { content: "\f1d6"; }
     </style>
 </head>
 <body>
@@ -286,11 +300,11 @@
     <nav class="navbar">
         <div class="nav-left">
             <span>爱玩电脑的小学森</span>
+            <a href="index2.html" class="content-link">资源</a>
         </div>
         <div class="nav-right">
             <!-- 房子键：返回本HTML（首页） -->
             <a href="index.html" title="首页"><i class="fas fa-home"></i></a>
-            <!-- 已删除搜索按钮 -->
             <!-- 明暗主题切换按钮 -->
             <i class="fas fa-moon" title="切换夜间模式" id="theme-toggle"></i>
         </div>
@@ -301,12 +315,11 @@
         <h1 class="hero-title">爱玩电脑的小学森の网页</h1>
         <p class="hero-subtitle">随便建的玩玩的</p>
         <div class="social-icons">
-            <!-- 4个联系方式按钮全部链接到baidu.com -->
+            <!-- 4个联系方式按钮 -->
             <a href="https://space.bilibili.com/3537111735077481" target="_blank"><i class="fab fa-bilibili"></i></a>
             <a href="https://github.com/limobai-2019" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="javascript:void(0)" id="envelope-btn"><i class="fas fa-envelope"></i></a>
-            <a href="javascript:void(0)" id="qq-btn"><i class="fab fa-qq"></i></a>
-
+            <a href="javascript:void(0)" id="envelope-btn" style="position:relative;"><i class="fas fa-envelope"></i></a>
+            <a href="javascript:void(0)" id="qq-btn" style="position:relative;"><i class="fab fa-qq"></i></a>
         </div>
     </header>
 
@@ -314,7 +327,7 @@
     <div class="content-wrapper">
         <!-- 主容器 -->
         <div class="main-container">
-            
+
             <!-- 个人信息（居中显示） -->
             <div class="profile-card">
                 <!-- 头像指定为 img1.png -->
@@ -355,21 +368,21 @@
         // 点击切换主题（带从左上往右下的展开动画）
         themeToggle.addEventListener('click', function() {
             const isDark = body.classList.contains('dark-mode');
-            
+
             // 设置覆盖层颜色为目标主题色
             if (isDark) {
                 overlay.style.background = '#f0f2f5';
             } else {
                 overlay.style.background = '#0f0f1a';
             }
-            
+
             // 触发动画：从左上角展开覆盖层
             overlay.classList.add('active');
-            
+
             // 动画进行到一半时切换主题
             setTimeout(function() {
                 body.classList.toggle('dark-mode');
-                
+
                 if (body.classList.contains('dark-mode')) {
                     themeToggle.classList.remove('fa-moon');
                     themeToggle.classList.add('fa-sun');
@@ -379,7 +392,7 @@
                     themeToggle.classList.add('fa-moon');
                     localStorage.setItem('theme', 'light');
                 }
-                
+
                 // 动画结束后收起覆盖层
                 setTimeout(function() {
                     overlay.classList.remove('active');
@@ -392,6 +405,8 @@
         if (envelopeBtn) {
             envelopeBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                // 移除已有的气泡
+                document.querySelectorAll('.tooltip-bubble').forEach(b => b.remove());
                 // 创建气泡元素
                 const bubble = document.createElement('div');
                 bubble.className = 'tooltip-bubble';
@@ -417,10 +432,12 @@
         if (qqBtn) {
             qqBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                // 移除已有的气泡
+                document.querySelectorAll('.tooltip-bubble').forEach(b => b.remove());
                 // 创建气泡元素
                 const bubble = document.createElement('div');
                 bubble.className = 'tooltip-bubble';
-                bubble.textContent = 'QQ:3811938061';
+                bubble.textContent = 'QQ: 123456789';
                 // 将气泡插入到QQ按钮旁边
                 qqBtn.appendChild(bubble);
                 // 触发动画
